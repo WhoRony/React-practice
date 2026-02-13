@@ -14,7 +14,7 @@ function App() {
   });
 
   const [filter, setFilter] = useState("all");
-  const [search, setSearch] = useState(""); // ✅ NEW SEARCH STATE
+  const [search, setSearch] = useState(""); // NEW SEARCH STATE
 
   const renderCount = useRef(0);
   const intervalRef = useRef(null);
@@ -103,7 +103,7 @@ function App() {
     renderCount.current++;
   };
 
-  // ✅ FILTER + SEARCH LOGIC
+  // FILTER + SEARCH LOGIC
   const filteredTasks = tasks
     .filter((task) => {
       if (filter === "active") return !task.completed;
@@ -142,7 +142,7 @@ function App() {
 
           <div className="flex gap-6 items-center">
             <p className="text-sm text-gray-500">
-              Controlled Renders: {renderCount.current}
+              Renders: {renderCount.current}
             </p>
 
             <button
@@ -195,7 +195,7 @@ function App() {
           </button>
         </form>
 
-        {/* 🔍 Search Bar */}
+        {/* Search Bar */}
         <input
           type="text"
           placeholder="Search tasks..."
