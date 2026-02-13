@@ -14,6 +14,7 @@ function App() {
   });
 
   const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState(""); // ✅ NEW SEARCH STATE
 
   const renderCount = useRef(0);
   const intervalRef = useRef(null);
@@ -102,12 +103,20 @@ function App() {
     renderCount.current++;
   };
 
-  // Filtering
-  const filteredTasks = tasks.filter((task) => {
-    if (filter === "active") return !task.completed;
-    if (filter === "completed") return task.completed;
-    return true;
-  });
+  // ✅ FILTER + SEARCH LOGIC
+  const filteredTasks = tasks
+    .filter((task) => {
+      if (filter === "active") return !task.completed;
+      if (filter === "completed") return task.completed;
+      return true;
+    })
+    .filter((task) => {
+      const text = search.toLowerCase();
+      return (
+        task.title.toLowerCase().includes(text) ||
+        task.description.toLowerCase().includes(text)
+      );
+    });
 
   const completedCount = tasks.filter((t) => t.completed).length;
   const activeCount = tasks.length - completedCount;
@@ -125,7 +134,6 @@ function App() {
         dark ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-gray-800"
       }`}
     >
-      {/* FIXED DESKTOP WIDTH */}
       <div className="w-[1100px] mx-auto">
 
         {/* Header */}
@@ -187,6 +195,17 @@ function App() {
           </button>
         </form>
 
+        {/* 🔍 Search Bar */}
+        <input
+          type="text"
+          placeholder="Search tasks..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className={`w-full p-2 border rounded mb-4 ${
+            dark ? "bg-gray-800 border-gray-600" : "bg-white border-gray-300"
+          }`}
+        />
+
         {/* Filters */}
         <div className="flex gap-3 mb-4">
           {["all", "active", "completed"].map((f) => (
@@ -207,6 +226,10 @@ function App() {
         </div>
 
         {/* Tasks */}
+        {filteredTasks.length === 0 && (
+          <p className="text-gray-500">No tasks found.</p>
+        )}
+
         {filteredTasks.map((task) => (
           <div
             key={task.id}
